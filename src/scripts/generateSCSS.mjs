@@ -12,21 +12,17 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Function for generating SCSS content for horizontal breakpoints
-// На вход приходят числовые значения брейкпоинтов; в комментариях добавляем 'px' только при выводе.
+// Breakpoints are numeric values; 'px' is appended only during output.
 const generateHorizontalSCSS = (breakpoints) => {
     const beforeMixins = Object.keys(breakpoints)
         .map(
             (bp) => `
-/**
- * @mixin for-${bp}
- * @description Mixin for applying styles for screens greater than or equal to ${
-                breakpoints[bp]
-            }px.
- * @example
- *  @include for-${bp} {
- *    // your styles here
- *  }
- */
+/// Applies styles for screens ${breakpoints[bp]}px and wider (mobile-first, min-width: ${breakpoints[bp]}px).
+/// @content
+/// @example scss
+///   @include for-${bp} {
+///     display: flex;
+///   }
 @mixin for-${bp}() {
   @include mob-first(${bp}) {
     @content;
@@ -38,16 +34,12 @@ const generateHorizontalSCSS = (breakpoints) => {
     const afterMixins = Object.keys(breakpoints)
         .map(
             (bp) => `
-/**
- * @mixin before-${bp}
- * @description Mixin for applying styles for screens less than ${
-                breakpoints[bp]
-            }px.
- * @example
- *  @include before-${bp} {
- *    // your styles here
- *  }
- */
+/// Applies styles for screens up to ${breakpoints[bp]}px (desktop-first, max-width: ${breakpoints[bp]}px).
+/// @content
+/// @example scss
+///   @include before-${bp} {
+///     display: none;
+///   }
 @mixin before-${bp}() {
   @include desk-first(${bp}) {
     @content;
@@ -70,16 +62,12 @@ const generateVerticalSCSS = (breakpoints) => {
     const beforeMixins = Object.keys(breakpoints)
         .map(
             (bp) => `
-/**
- * @mixin v-for-${bp}
- * @description Mixin for applying styles for screens with height greater than or equal to ${
-                breakpoints[bp]
-            }px.
- * @example
- *  @include v-for-${bp} {
- *    // your styles here
- *  }
- */
+/// Applies styles for screens ${breakpoints[bp]}px tall and taller (mobile-first vertical, min-height: ${breakpoints[bp]}px).
+/// @content
+/// @example scss
+///   @include v-for-${bp} {
+///     padding-top: 20px;
+///   }
 @mixin v-for-${bp}() {
   @include v-mob-first(${bp}) {
     @content;
@@ -91,16 +79,12 @@ const generateVerticalSCSS = (breakpoints) => {
     const afterMixins = Object.keys(breakpoints)
         .map(
             (bp) => `
-/**
- * @mixin v-before-${bp}
- * @description Mixin for applying styles for screens with height less than ${
-                breakpoints[bp]
-            }px.
- * @example
- *  @include v-before-${bp} {
- *    // your styles here
- *  }
- */
+/// Applies styles for screens up to ${breakpoints[bp]}px tall (desktop-first vertical, max-height: ${breakpoints[bp]}px).
+/// @content
+/// @example scss
+///   @include v-before-${bp} {
+///     padding-top: 0;
+///   }
 @mixin v-before-${bp}() {
   @include v-desk-first(${bp}) {
     @content;

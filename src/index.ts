@@ -20,4 +20,4 @@ export {
     HORIZONTAL_BREAKPOINTS,
 }
 
-export * from './components/horizontal.js';
+export * from './components/horizontal';

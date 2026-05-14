@@ -12,7 +12,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Function for generating SCSS map
-// На вход приходят числовые брейкпоинты (number), здесь мы уже добавляем 'px'.
+// Breakpoints are numeric values (number); 'px' is appended here during output.
 const generateSCSSMap = (breakpoints, name) => {
     return `$${name}-breakpoints: (
 ${Object.entries(breakpoints)

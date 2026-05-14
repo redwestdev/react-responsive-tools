@@ -4,7 +4,7 @@
     "lib": ["dom", "es6"],
     "jsx": "react-jsx",
     "module": "ESNext",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "isolatedModules": true,
     "sourceMap": false,
     "strict": true,

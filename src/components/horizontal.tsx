@@ -7,12 +7,14 @@ import React, {Fragment} from "react";
 import { TBreakpoint } from '../interfaces/TBreakpoint';
 import { useBreakpoint, useBreakpointBetween} from '../hooks/useBreakpoint';
 
-interface Props {
+export interface ForProps {
     children: React.ReactNode;
     p: TBreakpoint | number;
 }
 
-interface BetweenProps {
+export type BeforeProps = ForProps;
+
+export interface BetweenProps {
     children: React.ReactNode;
     max: TBreakpoint | number;
     min: TBreakpoint | number;
@@ -24,7 +26,7 @@ interface BetweenProps {
  *
  * Internally it uses {@link useBreakpoint} with variant "MtF".
  */
-export function For({children, p}: Props) {
+export function For({children, p}: ForProps) {
     const is = useBreakpoint(p, 'MtF');
     if (is) return <Fragment>{children}</Fragment>;
     return null;
@@ -36,7 +38,7 @@ export function For({children, p}: Props) {
  *
  * Internally it uses {@link useBreakpoint} with variant "DtF".
  */
-export function Before({children ,p}: Props) {
+export function Before({children ,p}: BeforeProps) {
     const is = useBreakpoint(p, 'DtF');
     if (is) return <Fragment>{children}</Fragment>;
     return null;

@@ -25,7 +25,7 @@ npm install react-responsive-tools
 To use the generated SCSS files, import the main SCSS file from the library:
 
 ```scss
-@use 'react-responsive-tools' as *;
+@use 'react-responsive-tools' as b;
 ```
 
 ### Import JavaScript
