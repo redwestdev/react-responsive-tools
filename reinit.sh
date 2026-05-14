@@ -1,7 +1,8 @@
 #!/bin/bash
 
-           # Path to dist directory
-           DIST_DIR="./dist"
+           # Path to dist directory (relative to this script, not the caller's cwd)
+           PACKAGE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+           DIST_DIR="$PACKAGE_DIR/dist"
            SCRIPT_DIR="$DIST_DIR/scripts"
 
            # Diagnostic information
