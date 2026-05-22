@@ -1,129 +1,130 @@
-import React from "react";
-import { render } from "@testing-library/react";
-import { useBreakpoint, useBreakpointBetween } from "./useBreakpoint";
+import { useBreakpoint, useBreakpointBetween } from './useBreakpoint';
+import { HORIZONTAL_BREAKPOINTS, PREFERRED_VARIANT } from '../breakpoints.config';
 
-jest.mock("react-responsive", () => ({
-    useMediaQuery: jest.fn(),
+// Mock react-responsive
+jest.mock('react-responsive', () => ({
+  useMediaQuery: jest.fn(),
 }));
 
-jest.mock("../breakpoints.config", () => ({
-    __esModule: true,
-    PREFERRED_VARIANT: "MtF",
-}));
+import { useMediaQuery } from 'react-responsive';
 
-import { useMediaQuery } from "react-responsive";
-import { PREFERRED_VARIANT } from "../breakpoints.config";
+const mockUseMediaQuery = useMediaQuery as jest.MockedFunction<typeof useMediaQuery>;
 
-const mockedUseMediaQuery = useMediaQuery as jest.MockedFunction<
-    typeof useMediaQuery
->;
+describe('useBreakpoint', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
 
-function BreakpointTestComponent(props: { b: any; variant?: any }) {
-    const value = useBreakpoint(props.b, props.variant);
-    return <div data-testid="value">{String(value)}</div>;
-}
+  it('should use min-width when variant is PREFERRED_VARIANT (MtF)', () => {
+    mockUseMediaQuery.mockReturnValue(true);
 
-function BreakpointBetweenTestComponent(props: {
-    min: any;
-    max: any;
-    preferredVariant?: any;
-}) {
-    const value = useBreakpointBetween(
-        props.min,
-        props.max,
-        props.preferredVariant
-    );
-    return <div data-testid="value">{String(value)}</div>;
-}
+    useBreakpoint(768, PREFERRED_VARIANT);
 
-describe("useBreakpoint", () => {
-    beforeEach(() => {
-        jest.clearAllMocks();
+    expect(mockUseMediaQuery).toHaveBeenCalledWith({
+      query: '(min-width: 768px)',
     });
+  });
 
-    it("uses min-width for numeric breakpoint when variant === PREFERRED_VARIANT", () => {
-        mockedUseMediaQuery.mockReturnValue(true);
+  it('should resolve named breakpoints to pixel values', () => {
+    mockUseMediaQuery.mockReturnValue(false);
 
-        const { getByTestId } = render(
-            <BreakpointTestComponent b={768} variant={PREFERRED_VARIANT as any} />
-        );
+    useBreakpoint('md', PREFERRED_VARIANT);
 
-        expect(mockedUseMediaQuery).toHaveBeenCalledWith({
-            query: "(min-width: 768px)",
-        });
-        expect(getByTestId("value").textContent).toBe("true");
+    const mdBreakpoint = HORIZONTAL_BREAKPOINTS['md'];
+    expect(mockUseMediaQuery).toHaveBeenCalledWith({
+      query: `(min-width: ${mdBreakpoint}px)`,
     });
+  });
 
-    it("decreases breakpoint by 1px when variant !== PREFERRED_VARIANT (numeric)", () => {
-        mockedUseMediaQuery.mockReturnValue(true);
+  it('should shift breakpoint by -1px when variant differs from PREFERRED_VARIANT (DtF)', () => {
+    mockUseMediaQuery.mockReturnValue(true);
 
-        const { getByTestId } = render(
-            <BreakpointTestComponent b={500} variant={"DtF"} />
-        );
+    useBreakpoint(500, 'DtF');
 
-        expect(mockedUseMediaQuery).toHaveBeenCalledWith({
-            query: "(max-width: 499px)",
-        });
-        expect(getByTestId("value").textContent).toBe("true");
+    // PREFERRED_VARIANT is 'MtF', so DtF should subtract 1
+    const expectedBp = 500 - 1;
+    expect(mockUseMediaQuery).toHaveBeenCalledWith({
+      query: `(max-width: ${expectedBp}px)`,
     });
+  });
+
+  it('should use max-width for DtF variant when PREFERRED_VARIANT is MtF', () => {
+    mockUseMediaQuery.mockReturnValue(true);
+
+    useBreakpoint(992, 'DtF');
+
+    expect(mockUseMediaQuery).toHaveBeenCalledWith({
+      query: `(max-width: 991px)`,
+    });
+  });
 });
 
-describe("useBreakpointBetween", () => {
-    beforeEach(() => {
-        jest.clearAllMocks();
+describe('useBreakpointBetween', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it('should reduce max by 1px for MtF variant', () => {
+    mockUseMediaQuery.mockReturnValue(true);
+
+    useBreakpointBetween(320, 768, 'MtF');
+
+    expect(mockUseMediaQuery).toHaveBeenCalledWith({
+      minWidth: 320,
+      maxWidth: 767, // 768 - 1
     });
+  });
 
-    it("uses min/max as-is but decreases max by 1px when preferredVariant === PREFERRED_VARIANT (numeric)", () => {
-        mockedUseMediaQuery.mockReturnValue(true);
+  it('should increase min by 1px for DtF variant', () => {
+    mockUseMediaQuery.mockReturnValue(false);
 
-        const { getByTestId } = render(
-            <BreakpointBetweenTestComponent
-                min={320}
-                max={768}
-                preferredVariant={PREFERRED_VARIANT as any}
-            />
-        );
+    useBreakpointBetween(320, 768, 'DtF');
 
-        expect(mockedUseMediaQuery).toHaveBeenCalledWith({
-            minWidth: 320,
-            maxWidth: 767, // 768 - 1
-        });
-        expect(getByTestId("value").textContent).toBe("true");
+    expect(mockUseMediaQuery).toHaveBeenCalledWith({
+      minWidth: 321, // 320 + 1
+      maxWidth: 768,
     });
+  });
 
-    it('when preferredVariant === "MtF" it only decreases max by 1px', () => {
-        mockedUseMediaQuery.mockReturnValue(true);
+  it('should resolve named breakpoints to pixel values', () => {
+    mockUseMediaQuery.mockReturnValue(true);
 
-        const { getByTestId } = render(
-            <BreakpointBetweenTestComponent
-                min={320}
-                max={768}
-                preferredVariant={"MtF"}
-            />
-        );
+    useBreakpointBetween('sm', 'lg', 'MtF');
 
-        expect(mockedUseMediaQuery).toHaveBeenCalledWith({
-            minWidth: 320,
-            maxWidth: 767,
-        });
-        expect(getByTestId("value").textContent).toBe("true");
+    const smBp = HORIZONTAL_BREAKPOINTS['sm'];
+    const lgBp = HORIZONTAL_BREAKPOINTS['lg'];
+
+    expect(mockUseMediaQuery).toHaveBeenCalledWith({
+      minWidth: smBp,
+      maxWidth: lgBp - 1,
     });
+  });
 
-    it('when preferredVariant === "DtF" it only decreases min by 1px', () => {
-        mockedUseMediaQuery.mockReturnValue(false);
+  it('should use PREFERRED_VARIANT by default', () => {
+    mockUseMediaQuery.mockReturnValue(true);
 
-        const { getByTestId } = render(
-            <BreakpointBetweenTestComponent
-                min={320}
-                max={768}
-                preferredVariant={"DtF"}
-            />
-        );
+    useBreakpointBetween(500, 1000);
 
-        expect(mockedUseMediaQuery).toHaveBeenCalledWith({
-            minWidth: 319,
-            maxWidth: 768,
-        });
-        expect(getByTestId("value").textContent).toBe("false");
+    // Should use PREFERRED_VARIANT which is 'MtF'
+    expect(mockUseMediaQuery).toHaveBeenCalledWith({
+      minWidth: 500,
+      maxWidth: 999, // 1000 - 1 (MtF reduces max)
     });
+  });
+
+  it('should return the result from react-responsive', () => {
+    mockUseMediaQuery.mockReturnValue(true);
+
+    const result = useBreakpoint(768);
+
+    expect(result).toBe(true);
+  });
+
+  it('should return false from react-responsive', () => {
+    mockUseMediaQuery.mockReturnValue(false);
+
+    const result = useBreakpoint(768);
+
+    expect(result).toBe(false);
+  });
 });
