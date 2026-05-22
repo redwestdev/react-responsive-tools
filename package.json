@@ -16,11 +16,14 @@
     "build:declarations": "tsc",
     "build:webpack": "webpack --config webpack.config.mjs --mode production",
     "build": "yarn build:declarations && yarn build:webpack",
-    "postinstall": "echo 'To recreate all files, run: react-responsive-tools run reinit'",
+    "copy-config": "node ./bin/copyBreakpointsConfig.mjs",
+    "postinstall": "node ./bin/copyBreakpointsConfig.mjs && echo 'To recreate all files, run: react-responsive-tools run reinit'",
     "reinit": "sh ./reinit.sh"
   },
   "files": [
     "dist",
+    "bin",
+    "templates",
     "reinit.sh",
     "index.scss"
   ],
