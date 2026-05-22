@@ -1,6 +1,6 @@
-// breakpoints.config.ts
-
-type TAdaptiveVariant = 'MtF' | 'DtF';
+// breakpoints.config.js
+// User-editable breakpoints configuration for react-responsive-tools.
+// Types for editor hints live in the sibling breakpoints.config.d.mts file.
 
 /**
  * Preferred adaptive layout variant.
@@ -18,28 +18,26 @@ type TAdaptiveVariant = 'MtF' | 'DtF';
  * which causes an overlap. By shifting one of them by 1px we guarantee
  * that a given pixel belongs to only one range.
  */
-export const PREFERRED_VARIANT: TAdaptiveVariant = 'MtF'; // Mobile to first
+export const PREFERRED_VARIANT = "MtF"; // Mobile to first
 
-const HORIZONTAL_BREAKPOINTS: Record<string, number> = {
-    "xs": 320,
-    "sm": 576,
-    "md": 768,
-    "lg": 992,
-    "lt": 1024,
-    "ltm": 1200,
-    "ltl": 1440,
-    "xl": 1920,
-    "xxl": 2560,
-    "qxl": 384,
+export const HORIZONTAL_BREAKPOINTS = {
+    xs: 320,
+    sm: 576,
+    md: 768,
+    lg: 992,
+    lt: 1024,
+    ltm: 1200,
+    ltl: 1440,
+    xl: 1920,
+    xxl: 2560,
+    qxl: 384,
 };
 
-const VERTICAL_BREAKPOINTS: Record<string, number> = {
-    "xs": 600,
-    "sm": 800,
-    "md": 1000,
-    "lg": 1200,
-    "xl": 1600,
-    "xxl": 160,
+export const VERTICAL_BREAKPOINTS = {
+    xs: 600,
+    sm: 800,
+    md: 1000,
+    lg: 1200,
+    xl: 1600,
+    xxl: 160,
 };
-
-export { HORIZONTAL_BREAKPOINTS, VERTICAL_BREAKPOINTS };

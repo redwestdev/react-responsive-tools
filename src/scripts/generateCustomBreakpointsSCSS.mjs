@@ -34,3 +34,4 @@ fs.writeFileSync(
 );
 
 console.log("SCSS file with breakpoints maps has been generated successfully.");
+console.log(scssContent);

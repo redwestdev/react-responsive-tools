@@ -1,10 +1,12 @@
 {
   "name": "react-responsive-tools",
-  "version": "2.7.3",
+  "version": "2.7.7",
   "description": "",
   "main": "dist/index.js",
   "module": "dist/index.js",
   "types": "dist/index.d.ts",
+  "sass": "index.scss",
+  "style": "index.scss",
   "type": "module",
   "scripts": {
     "dev": "webpack --mode development --watch",
@@ -16,9 +18,10 @@
     "build:declarations": "tsc",
     "build:webpack": "webpack --config webpack.config.mjs --mode production",
     "build": "yarn build:declarations && yarn build:webpack",
+    "prepack": "yarn build",
     "copy-config": "node ./bin/copyBreakpointsConfig.mjs",
     "postinstall": "node ./bin/copyBreakpointsConfig.mjs && echo 'To recreate all files, run: react-responsive-tools run reinit'",
-    "reinit": "sh ./reinit.sh"
+    "reinit:breakpoints": "sh ./reinit.sh"
   },
   "files": [
     "dist",

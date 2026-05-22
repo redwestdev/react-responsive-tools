@@ -8,7 +8,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const packageRoot = path.resolve(__dirname, '..');
-const templatePath = path.resolve(packageRoot, 'templates/breakpoints.config.ts');
+const templatesDir = path.resolve(packageRoot, 'templates');
 
 // INIT_CWD is set by npm/yarn to the directory where the install was invoked
 // (i.e. the consumer's project root). Fall back to cwd when run manually.
@@ -21,23 +21,29 @@ if (path.resolve(projectRoot) === packageRoot) {
   process.exit(0);
 }
 
-const destinationPath = path.resolve(projectRoot, 'breakpoints.config.ts');
+const filesToCopy = [
+  'breakpoints.config.js',
+];
 
-if (!fs.existsSync(templatePath)) {
-  console.warn(`[react-responsive-tools] Template not found at ${templatePath}, skipping copy.`);
-  process.exit(0);
-}
+for (const fileName of filesToCopy) {
+  const templatePath = path.resolve(templatesDir, fileName);
+  const destinationPath = path.resolve(projectRoot, fileName);
 
-if (fs.existsSync(destinationPath)) {
-  console.log(`[react-responsive-tools] breakpoints.config.ts already exists at ${destinationPath}, skipping copy.`);
-  process.exit(0);
-}
+  if (!fs.existsSync(templatePath)) {
+    console.warn(`[react-responsive-tools] Template not found at ${templatePath}, skipping.`);
+    continue;
+  }
 
-try {
-  fs.copyFileSync(templatePath, destinationPath);
-  console.log(`[react-responsive-tools] Copied breakpoints.config.ts to ${destinationPath}`);
-} catch (error) {
-  console.warn(`[react-responsive-tools] Failed to copy breakpoints.config.ts: ${error.message}`);
-  // Don't break the install if the copy fails.
-  process.exit(0);
+  if (fs.existsSync(destinationPath)) {
+    console.log(`[react-responsive-tools] ${fileName} already exists at ${destinationPath}, skipping.`);
+    continue;
+  }
+
+  try {
+    fs.copyFileSync(templatePath, destinationPath);
+    console.log(`[react-responsive-tools] Copied ${fileName} to ${destinationPath}`);
+  } catch (error) {
+    console.warn(`[react-responsive-tools] Failed to copy ${fileName}: ${error.message}`);
+    // Don't break the install if the copy fails.
+  }
 }
