@@ -20,6 +20,23 @@ yarn add react-responsive-tools
 npm install react-responsive-tools
 ```
 
+### Breakpoints Config after Installation
+
+During installation, the package copies `breakpoints.config.js` to your project
+root if this file does not already exist. This file contains the same breakpoint
+configuration that is used inside the package by default.
+
+You can edit `breakpoints.config.js` to replace, add, or remove horizontal and
+vertical breakpoints. After changing this config, manually recreate the generated
+package files:
+
+```sh
+react-responsive-tools run reinit
+```
+
+Without running `react-responsive-tools run reinit`, the package will continue
+to work with the previously generated breakpoint configuration.
+
 ### Import SCSS
 
 To use the generated SCSS files, import the main SCSS file from the library:
